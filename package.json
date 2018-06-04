@@ -1,0 +1,29 @@
+{
+  "name": "devto-post",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/MAinulYaqin/devto-post"
+  },
+  "keywords": [
+    "devto-post",
+    "devto-scrapper",
+    "devto-app"
+  ],
+  "author": "AinulBedjo",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "express": "^4.16.3",
+    "puppeteer": "^1.4.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "webpack": "^4.10.2"
+  }
+}
