@@ -1,40 +1,56 @@
-const puppeteer = require('puppeteer');
-
-let config = require('./config/user.js');
-
-// DOM selector
-const USERNAME_SELECTOR = '#login_field';
-const PASSWORD_SELECTOR = '#password';
-const BUTTON_SELECTOR = '#login > form > div.auth-form-body.mt-3 > input.btn.btn-primary.btn-block';
-
-const LIST_USERNAME_SELECTOR = '#user_search_results > div.user-list > div:nth-child(1) > div.d-flex > div > a';
-const LIST_EMAIL_SELECTOR = '#user_search_results > div.user-list > div:nth-child(2) > div.d-flex > div > ul > li:nth-child(2) > a';
-const LENGTH_SELECTOR_CLASS = 'user-list-item';
-
-// Search
-const userToSearch = 'MAinulYaqin'
-const searchUrl = `https://github.com/search?q=${userToSearch}&type=Users&utf8=%E2%9C%93`;
+const puppeteer = require('puppeteer')
+const config = require('./config/user')
 
 async function run () {
     const browser = await puppeteer.launch({
         headless: true
-    });
-    const page = await browser.newPage();
+    })
 
-    await page.goto('https://www.github.com/login');
+    const page = await browser.newPage()
 
-    await page.click(USERNAME_SELECTOR);
-    await page.keyboard.type(config.username);
+    await page.goto('https://www.github.com/login')
+    // await page.screenshot({path: 'lol.png'})
 
-    await page.click(PASSWORD_SELECTOR);
-    await page.keyboard.type(config.password);
+    // Auto login and take a screenshot
 
-    await page.click(BUTTON_SELECTOR);
+    const USERNAME_INPUT = '#login_field'
+    const PASSWORD_INPUT = '#password'
+    const SUBMIT_BTN = '#login > form > .auth-form-body.mt-3 > .btn.btn-primary.btn-block'
 
-    await page.waitForNavigation();
+    await page.click(USERNAME_INPUT)
+    await page.keyboard.type(config.username)
 
-    await page.goto(searchUrl);
-    await page.waitFor(2*1000);
+    await page.click(PASSWORD_INPUT)
+    await page.keyboard.type(config.password)
+
+    await page.click(SUBMIT_BTN)
+    await page.waitForNavigation()
+
+    await page.goto('https://github.com/search?q=Ainul&type=Users')
+
+    await page.screenshot({path: './github-search.png'})
+
+    // Search value scrapper
+
+    const USERNAME_LIST = '.user-list-item.f5.py-4:nth-of-type(INDEX) > .d-flex > .user-list-info.ml-2 > a'
+    const LENGTH_SELECTOR_CLASS = 'user-list-item'
+    
+    let listLength = await page.evaluate((sel) => {
+        return document.getElementsByClassName(sel).length
+    }, LENGTH_SELECTOR_CLASS)
+
+    for (let i = 1; i <= listLength; i++) {
+        let usernameSelector = USERNAME_LIST.replace('INDEX', i)
+        
+        let username = await page.evaluate((sel) => {
+            return document.querySelector(sel).getAttribute('href').replace('/', '');
+        }, usernameSelector);
+
+        console.log(username)
+    }
+
+    browser.close()
+    console.log('is ended here')
 }
 
 run()
