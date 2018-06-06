@@ -43,6 +43,8 @@ async function run () {
         let usernameSelector = USERNAME_LIST.replace('INDEX', i)
         
         let username = await page.evaluate((sel) => {
+            console.log('sel', sel)
+            console.log('dom', document.querySelector(sel))
             return document.querySelector(sel).getAttribute('href').replace('/', '');
         }, usernameSelector);
 
